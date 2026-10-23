@@ -1,6 +1,4 @@
-"""Full-space gradient-regularized Newton with lemma-based adaptive L.
-
-"""
+"""Full-space gradient-regularized Newton with lemma-based adaptive L. """
 
 import math
 import time
