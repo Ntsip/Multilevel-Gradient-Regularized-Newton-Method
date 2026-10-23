@@ -126,9 +126,27 @@ def regularized_multilevel_newton(
     coarse_levels = all_levels[:-1]
     ncoarse = len(coarse_levels)
     grad_fun = jacrev(objective)
-    # jacrev(jacrev(...)) matches the supplied implementation.
+
     full_hessian_fun = jacrev(grad_fun)
     eps_float = torch.finfo(x.dtype).eps
+
+    # ---------------------------------------------------------
+    # Warm-up: excluded from optimization wall-clock timing
+    # ---------------------------------------------------------
+    for _ in range(2):
+        _ = grad_fun(x)
+        H_warm = full_hessian_fun(x).detach()
+
+        # Warm up the Cholesky backend as well.
+        I = torch.eye(
+            x.numel(), dtype=x.dtype, device=x.device
+        )
+        _ = torch.linalg.cholesky_ex(
+            0.5 * (H_warm + H_warm.T) + I
+        )
+
+    if x.device.type == 'cuda':
+        torch.cuda.synchronize()
 
     start = time.perf_counter()
     value_evals = gradient_evals = hessian_evals = factorizations = 0
