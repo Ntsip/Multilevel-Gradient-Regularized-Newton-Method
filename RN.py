@@ -1,11 +1,5 @@
 """Full-space gradient-regularized Newton with lemma-based adaptive L.
 
-Standalone implementation: does NOT import the multilevel solver or use `levels`.
-Derivative calls, regularization, Cholesky solves, stopping logic, acceptance
-conditions and output fields mirror its fine-step branch for fair comparison.
-
-Assumes a convex twice-differentiable objective with Lipschitz Hessian when
-invoking the convergence justification. Such properties are NOT verified here.
 """
 
 import math
